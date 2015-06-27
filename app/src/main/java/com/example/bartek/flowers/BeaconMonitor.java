@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.widget.Toast;
 
+import com.example.bartek.flowers.DevicesList.DevicesInfiniteList;
 import com.example.bartek.flowers.utils.Device;
 import com.kontakt.sdk.android.configuration.ForceScanConfiguration;
 import com.kontakt.sdk.android.configuration.MonitorPeriod;
@@ -20,18 +21,39 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-public class BeaconMonitorActivity extends Activity {
+public class BeaconMonitor implements Runnable{
 
     private static final int REQUEST_CODE_ENABLE_BLUETOOTH = 1;
 
     private BeaconManager beaconManager;
+    private DevicesInfiniteList devicesInfiniteList;
+
+    public BeaconMonitor(DevicesInfiniteList devicesInfiniteList) {
+        this.devicesInfiniteList = devicesInfiniteList;
+    }
+
+
+    private void connect() {
+        try {
+            beaconManager.connect(new OnServiceBoundListener() {
+                @Override
+                public void onServiceBound() {
+                    try {
+                        beaconManager.startMonitoring(new HashSet<Region>(Arrays.asList(Region.EVERYWHERE)));
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (RemoteException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.beacon_monitor_list_activity);
-
-        beaconManager = BeaconManager.newInstance(this);
+    public void run() {
+        beaconManager = BeaconManager.newInstance(devicesInfiniteList);
         beaconManager.setMonitorPeriod(MonitorPeriod.MINIMAL);
         beaconManager.setForceScanConfiguration(ForceScanConfiguration.DEFAULT);
         beaconManager.registerMonitoringListener(new BeaconManager.MonitoringListener() {
@@ -66,14 +88,10 @@ public class BeaconMonitorActivity extends Activity {
             @Override
             public void onRegionAbandoned(final Region venue) {} // Android device abandons the region
         });
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
         if(!beaconManager.isBluetoothEnabled()) {
             final Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(intent, REQUEST_CODE_ENABLE_BLUETOOTH);
+            //startActivityForResult(intent, REQUEST_CODE_ENABLE_BLUETOOTH);
         } else if(beaconManager.isConnected()) {
             try {
                 beaconManager.startRanging();
@@ -84,53 +102,6 @@ public class BeaconMonitorActivity extends Activity {
         } else {
             connect();
         }
+
     }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        beaconManager.stopMonitoring();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        beaconManager.disconnect();
-        beaconManager = null;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if(requestCode == REQUEST_CODE_ENABLE_BLUETOOTH) {
-            if(resultCode == Activity.RESULT_OK) {
-                connect();
-            } else {
-                Toast.makeText(this, "Bluetooth not enabled", Toast.LENGTH_LONG).show();
-                getActionBar().setSubtitle("Bluetooth not enabled");
-            }
-            return;
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void connect() {
-        try {
-            beaconManager.connect(new OnServiceBoundListener() {
-                @Override
-                public void onServiceBound() {
-                    try {
-                        beaconManager.startMonitoring(new HashSet<Region>(Arrays.asList(Region.EVERYWHERE)));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        } catch (RemoteException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-
 }

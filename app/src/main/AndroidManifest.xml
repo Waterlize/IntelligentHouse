@@ -16,7 +16,7 @@
         <service android:name="com.kontakt.sdk.android.manager.BeaconServiceL" android:exported="false"/>
         <service android:name="com.kontakt.sdk.android.manager.ActionService" android:exported="false"/>
         <activity
-            android:name=".BeaconMonitorActivity"
+            android:name=".BeaconMonitor"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
