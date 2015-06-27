@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 
+import com.example.bartek.flowers.BeaconMonitor;
 import com.example.bartek.flowers.utils.Device;
 
 import java.util.ArrayList;
@@ -23,7 +24,8 @@ public class DevicesInfiniteList extends ListActivity implements OnScrollListene
         super.onCreate(savedInstanceState);
         setListAdapter(adapter);
         getListView().setOnScrollListener(this);
-//        Thread thread = new Thread(new BeaconMonitorActivity(this));
+        Thread thread = new Thread(new BeaconMonitor(this));
+        thread.start();
     }
 
     @Override

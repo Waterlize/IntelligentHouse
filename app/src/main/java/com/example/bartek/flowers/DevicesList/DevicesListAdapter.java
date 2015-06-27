@@ -1,5 +1,6 @@
 package com.example.bartek.flowers.DevicesList;
 
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -13,9 +14,9 @@ import com.example.bartek.flowers.utils.Device;
 public class DevicesListAdapter extends BaseAdapter {
 
     private int count = 40; /* starting amount */
-    private DevicesInfiniteList devicesList;
+    private Context devicesList;
 
-    public DevicesListAdapter(DevicesInfiniteList devicesList) {
+    public DevicesListAdapter(Context devicesList) {
         super();
         this.devicesList = devicesList;
     }
@@ -41,10 +42,12 @@ public class DevicesListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Device device = devicesList.getDeviceAt(position);
-        TextView view = new TextView(devicesList);
-        view.setText("Device " + device.getName());
-        return view;
+        Device device = Device.deviceList.get(position);
+        if(device != null) {
+            TextView view = new TextView(devicesList);
+            view.setText("Device " + device.getName());
+        }
+        return null;
     }
 
 }
