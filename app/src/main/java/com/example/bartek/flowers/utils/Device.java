@@ -26,7 +26,7 @@ public class Device {
         this.state = state;
         this.color="black";
         if (this.state.equals(1)) this.color = "green";
-        if (this.state.equals(2)) this.color = "red";
+        if (this.state.equals(0)) this.color = "red";
     }
 
     public String getColor() {
