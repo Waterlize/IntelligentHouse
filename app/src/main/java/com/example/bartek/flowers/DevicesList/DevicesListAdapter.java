@@ -4,18 +4,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.content.Context;
+
+import com.example.bartek.flowers.utils.Device;
+
 /**
  * Created by sylwek on 27.06.15.
  */
 public class DevicesListAdapter extends BaseAdapter {
 
     private int count = 40; /* starting amount */
-    private Context context;
+    private DevicesInfiniteList devicesList;
 
-    public DevicesListAdapter(Context context) {
+    public DevicesListAdapter(DevicesInfiniteList devicesList) {
         super();
-        this.context = context;
+        this.devicesList = devicesList;
     }
 
     @Override
@@ -39,9 +41,9 @@ public class DevicesListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        //TODO
-        TextView view = new TextView(context);
-        view.setText("Device " + position);
+        Device device = devicesList.getDeviceAt(position);
+        TextView view = new TextView(devicesList);
+        view.setText("Device " + device.getName());
         return view;
     }
 

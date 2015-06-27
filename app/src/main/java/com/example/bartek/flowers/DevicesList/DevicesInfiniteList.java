@@ -23,6 +23,7 @@ public class DevicesInfiniteList extends ListActivity implements OnScrollListene
         super.onCreate(savedInstanceState);
         setListAdapter(adapter);
         getListView().setOnScrollListener(this);
+//        Thread thread = new Thread(new BeaconMonitorActivity(this));
     }
 
     @Override
@@ -48,5 +49,11 @@ public class DevicesInfiniteList extends ListActivity implements OnScrollListene
 
     public void removeDevice(Device device) {
         devices.remove(device);
+    }
+
+    public Device getDeviceAt(int position) {
+        if(position >= devices.size())
+            return null;
+        return devices.get(position);
     }
 }
