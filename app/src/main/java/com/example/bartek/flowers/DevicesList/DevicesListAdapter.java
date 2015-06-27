@@ -1,4 +1,4 @@
-package com.example.bartek.flowers;
+package com.example.bartek.flowers.DevicesList;
 
 import android.view.View;
 import android.view.ViewGroup;
