@@ -8,6 +8,7 @@ import android.os.RemoteException;
 import android.widget.Toast;
 
 import com.example.bartek.flowers.DevicesList.DevicesInfiniteList;
+import com.example.bartek.flowers.R;
 import com.example.bartek.flowers.utils.Device;
 import com.kontakt.sdk.android.configuration.ForceScanConfiguration;
 import com.kontakt.sdk.android.configuration.MonitorPeriod;
@@ -17,11 +18,10 @@ import com.kontakt.sdk.android.device.Region;
 import com.kontakt.sdk.android.manager.BeaconManager;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-public class BeaconMonitor implements Runnable{
+public class BeaconMonitor implements  Runnable {
 
     private static final int REQUEST_CODE_ENABLE_BLUETOOTH = 1;
 
@@ -31,6 +31,67 @@ public class BeaconMonitor implements Runnable{
     public BeaconMonitor(DevicesInfiniteList devicesInfiniteList) {
         this.devicesInfiniteList = devicesInfiniteList;
     }
+
+    @Override
+    public void run() {
+
+
+        beaconManager = BeaconManager.newInstance(devicesInfiniteList);
+        beaconManager.setMonitorPeriod(MonitorPeriod.MINIMAL);
+        beaconManager.setForceScanConfiguration(ForceScanConfiguration.DEFAULT);
+        beaconManager.registerMonitoringListener(new BeaconManager.MonitoringListener() {
+            @Override
+            public void onMonitorStart() {
+            } // active scan period starts
+
+            @Override
+            public void onMonitorStop() {
+            } // passive scan period starts
+
+            @Override
+            public void onBeaconAppeared(final Region region, final BeaconDevice beaconDevice) { // beacon appeared within desired region for the first time
+                System.out.println("ADDED NEW Beacon id: " + beaconDevice.getUniqueId() + " major: " + beaconDevice.getMajor() + " minor: " + beaconDevice.getMinor());
+
+                Device.deviceList.add(new Device(beaconDevice.getUniqueId(), ((beaconDevice.getMinor() & 128) == 0) ? 0 : 1));
+            }
+
+            @Override
+            public void onBeaconsUpdated(final Region venue, final List<BeaconDevice> beacons) {
+
+                for (BeaconDevice beaconDevice : beacons) {
+                    for (Device device : Device.deviceList) {
+                        if (device.getId().equals(beaconDevice.getUniqueId()))
+                            device.setState(((beaconDevice.getMinor() & 128) == 0) ? 0 : 1);
+                    }
+                    System.out.println("Beacon id: " + beaconDevice.getUniqueId() + " major: " + beaconDevice.getMajor() + " minor: " + beaconDevice.getMinor());
+                }
+
+
+            } // beacons that are visible within specified region are provided through this method callback. This method has the same
+
+            @Override
+            public void onRegionEntered(final Region venue) {
+            } // Android device enters the Region for the first time
+
+            @Override
+            public void onRegionAbandoned(final Region venue) {
+            } // Android device abandons the region
+        });
+        if(!beaconManager.isBluetoothEnabled()) {
+            final Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+
+        } else if(beaconManager.isConnected()) {
+            try {
+                beaconManager.startRanging();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            connect();
+        }
+    }
+
 
 
     private void connect() {
@@ -51,57 +112,4 @@ public class BeaconMonitor implements Runnable{
     }
 
 
-    @Override
-    public void run() {
-        beaconManager = BeaconManager.newInstance(devicesInfiniteList);
-        beaconManager.setMonitorPeriod(MonitorPeriod.MINIMAL);
-        beaconManager.setForceScanConfiguration(ForceScanConfiguration.DEFAULT);
-        beaconManager.registerMonitoringListener(new BeaconManager.MonitoringListener() {
-            @Override
-            public void onMonitorStart() {} // active scan period starts
-
-            @Override
-            public void onMonitorStop() {} // passive scan period starts
-
-            @Override
-            public void onBeaconAppeared(final Region region, final BeaconDevice beaconDevice) { // beacon appeared within desired region for the first time
-                //System.out.println("ADDED NEW Beacon id: " + beaconDevice.getUniqueId() + " major: " + beaconDevice.getMajor() + " minor: " + beaconDevice.getMinor());
-
-                Device.deviceList.add(new Device(beaconDevice.getUniqueId(),((beaconDevice.getMinor() & 128)==0) ? 0 : 1));
-            }
-            @Override
-            public void onBeaconsUpdated(final Region venue, final List<BeaconDevice> beacons) {
-
-                for(BeaconDevice beaconDevice : beacons){
-                    for (Device device : Device.deviceList) {
-                        if(device.getId().equals(beaconDevice.getUniqueId())) device.setState(((beaconDevice.getMinor() & 128)==0) ? 0 : 1);
-                    }
-                    //System.out.println("Beacon id: "+beaconDevice.getUniqueId() + " major: "+ beaconDevice.getMajor() + " minor: " + beaconDevice.getMinor());
-                }
-
-
-            } // beacons that are visible within specified region are provided through this method callback. This method has the same
-
-            @Override
-            public void onRegionEntered(final Region venue) {} // Android device enters the Region for the first time
-
-            @Override
-            public void onRegionAbandoned(final Region venue) {} // Android device abandons the region
-        });
-
-        if(!beaconManager.isBluetoothEnabled()) {
-            final Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            //startActivityForResult(intent, REQUEST_CODE_ENABLE_BLUETOOTH);
-        } else if(beaconManager.isConnected()) {
-            try {
-                beaconManager.startRanging();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-
-        } else {
-            connect();
-        }
-
-    }
 }

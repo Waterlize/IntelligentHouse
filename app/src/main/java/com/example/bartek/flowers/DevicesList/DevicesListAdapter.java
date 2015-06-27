@@ -42,12 +42,13 @@ public class DevicesListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Device device = Device.deviceList.get(position);
-        if(device != null) {
+        //Device device = Device.deviceList.get(position);
+        //if(device != null) {
             TextView view = new TextView(devicesList);
-            view.setText("Device " + device.getName());
-        }
-        return null;
+            //view.setText("Device " + device.getName());
+        //}
+
+        return view;
     }
 
 }
