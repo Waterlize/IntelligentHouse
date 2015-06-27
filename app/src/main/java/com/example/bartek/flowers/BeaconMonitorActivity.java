@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.widget.Toast;
 
+import com.example.bartek.flowers.utils.Device;
 import com.kontakt.sdk.android.configuration.ForceScanConfiguration;
 import com.kontakt.sdk.android.configuration.MonitorPeriod;
 import com.kontakt.sdk.android.connection.OnServiceBoundListener;
@@ -42,14 +43,21 @@ public class BeaconMonitorActivity extends Activity {
 
             @Override
             public void onBeaconAppeared(final Region region, final BeaconDevice beaconDevice) { // beacon appeared within desired region for the first time
-                System.out.println("ADDED NEW Beacon id: " + beaconDevice.getUniqueId() + " major: " + beaconDevice.getMajor() + " minor: " + beaconDevice.getMinor());
+                //System.out.println("ADDED NEW Beacon id: " + beaconDevice.getUniqueId() + " major: " + beaconDevice.getMajor() + " minor: " + beaconDevice.getMinor());
+
+                Device.deviceList.add(new Device(beaconDevice.getUniqueId(),((beaconDevice.getMinor() & 128)==0) ? 0 : 1));
             }
             @Override
             public void onBeaconsUpdated(final Region venue, final List<BeaconDevice> beacons) {
 
                 for(BeaconDevice beaconDevice : beacons){
-                    System.out.println("Beacon id: "+beaconDevice.getUniqueId() + " major: "+ beaconDevice.getMajor() + " minor: " + beaconDevice.getMinor());
+                    for (Device device : Device.deviceList) {
+                        if(device.getId().equals(beaconDevice.getUniqueId())) device.setState(((beaconDevice.getMinor() & 128)==0) ? 0 : 1);
+                    }
+                    //System.out.println("Beacon id: "+beaconDevice.getUniqueId() + " major: "+ beaconDevice.getMajor() + " minor: " + beaconDevice.getMinor());
                 }
+
+
             } // beacons that are visible within specified region are provided through this method callback. This method has the same
 
             @Override
@@ -123,4 +131,6 @@ public class BeaconMonitorActivity extends Activity {
             throw new IllegalStateException(e);
         }
     }
+
+
 }

@@ -1,25 +1,32 @@
 package com.example.bartek.flowers.utils;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 
 /**
  * Created by Bartek on 2015-06-27.
  */
 public class Device {
+    static public List<Device> deviceList = new ArrayList<Device>();
+
     String color;
     String id;
     String name;
     Integer state;
     Date lastUpdate;
 
-    public Device(String id) {
+    public Device(String id, Integer state) {
         this.id = id;
         this.name = "Device "+ id;
+        this.setState(state);
     }
 
-    public Device(String id, String name) {
+    public Device(String id, String name, Integer state) {
         this.id = id;
         this.name = name;
+        this.setState(state);
     }
 
     public void setState(Integer state) {
@@ -27,6 +34,7 @@ public class Device {
         this.color="black";
         if (this.state.equals(1)) this.color = "green";
         if (this.state.equals(0)) this.color = "red";
+        this.lastUpdate=new java.util.Date();
     }
 
     public String getColor() {
