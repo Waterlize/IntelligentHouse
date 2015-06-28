@@ -7,7 +7,7 @@ import com.example.bartek.flowers.BeaconMonitor;
 /**
  * Created by sylwek on 27.06.15.
  */
-public class DevicesInfiniteList extends ListActivity {
+public class DevicesInfiniteList extends ListActivity implements  Runnable {
 
     private DevicesListAdapter adapter = new DevicesListAdapter(this);
 
@@ -19,8 +19,8 @@ public class DevicesInfiniteList extends ListActivity {
         thread.start();
     }
 
-    public void notifyDevicesListAdapter() {
-        System.out.println("what");
+    public void run() {
+        //System.out.println("what");
         adapter.notifyDataSetChanged();
     }
 }

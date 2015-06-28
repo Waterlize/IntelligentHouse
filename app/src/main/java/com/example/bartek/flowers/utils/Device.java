@@ -1,6 +1,7 @@
 package com.example.bartek.flowers.utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
 
@@ -9,7 +10,7 @@ import java.util.Observable;
  * Created by Bartek on 2015-06-27.
  */
 public class Device extends Observable {
-    static public List<Device> deviceList = new ArrayList<Device>();
+    static public List<Device> deviceList = Collections.synchronizedList(new ArrayList<Device>());
 
     public static final String RED = "red";
     public static final String GREEN = "green";
@@ -41,7 +42,7 @@ public class Device extends Observable {
         if (this.state.equals(0)) this.color = RED;
     }
     public void newState(){
-        if((System.currentTimeMillis()/ 1000) - this.lastUpdate>15) this.setState(-1);
+        if(((System.currentTimeMillis()/ 1000) - this.lastUpdate)>15) this.setState(-1);
     }
 
     public String getColor() {
