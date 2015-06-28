@@ -1,5 +1,6 @@
 package com.example.bartek.flowers.utils;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,12 +15,13 @@ public class Device extends Observable {
 
     public static final String RED = "red";
     public static final String GREEN = "green";
+    public static final String GREY = "grey";
 
     String color;
     String id;
     String name;
     Integer state;
-    Date lastUpdate;
+    long lastUpdate;
 
     public Device(String id, Integer state) {
         this.id = id;
@@ -35,10 +37,13 @@ public class Device extends Observable {
 
     public void setState(Integer state) {
         this.state = state;
-        this.color="black";
+        this.color=GREY;
+        this.lastUpdate=System.currentTimeMillis()/1000;
         if (this.state.equals(1)) this.color = GREEN;
         if (this.state.equals(0)) this.color = RED;
-        this.lastUpdate=new java.util.Date();
+    }
+    public void newState(){
+        if((System.currentTimeMillis()/ 1000) - this.lastUpdate>15) this.setState(-1);
     }
 
     public String getColor() {
@@ -57,7 +62,7 @@ public class Device extends Observable {
         return state;
     }
 
-    public Date getLastUpdate() {
+    public long getLastUpdate() {
         return lastUpdate;
     }
 
@@ -68,11 +73,11 @@ public class Device extends Observable {
 
         Device device = (Device) o;
 
+        if (lastUpdate != device.lastUpdate) return false;
         if (color != null ? !color.equals(device.color) : device.color != null) return false;
         if (!id.equals(device.id)) return false;
         if (!name.equals(device.name)) return false;
-        if (state != null ? !state.equals(device.state) : device.state != null) return false;
-        return !(lastUpdate != null ? !lastUpdate.equals(device.lastUpdate) : device.lastUpdate != null);
+        return !(state != null ? !state.equals(device.state) : device.state != null);
 
     }
 
@@ -82,7 +87,7 @@ public class Device extends Observable {
         result = 31 * result + id.hashCode();
         result = 31 * result + name.hashCode();
         result = 31 * result + (state != null ? state.hashCode() : 0);
-        result = 31 * result + (lastUpdate != null ? lastUpdate.hashCode() : 0);
+        result = 31 * result + (int) (lastUpdate ^ (lastUpdate >>> 32));
         return result;
     }
 }
