@@ -3,13 +3,17 @@ package com.example.bartek.flowers.utils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Observable;
 
 
 /**
  * Created by Bartek on 2015-06-27.
  */
-public class Device {
+public class Device extends Observable {
     static public List<Device> deviceList = new ArrayList<Device>();
+
+    public static final String RED = "red";
+    public static final String GREEN = "green";
 
     String color;
     String id;
@@ -32,8 +36,8 @@ public class Device {
     public void setState(Integer state) {
         this.state = state;
         this.color="black";
-        if (this.state.equals(1)) this.color = "green";
-        if (this.state.equals(0)) this.color = "red";
+        if (this.state.equals(1)) this.color = GREEN;
+        if (this.state.equals(0)) this.color = RED;
         this.lastUpdate=new java.util.Date();
     }
 

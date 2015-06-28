@@ -1,6 +1,7 @@
 package com.example.bartek.flowers.DevicesList;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -12,22 +13,16 @@ import com.example.bartek.flowers.utils.Device;
  * Created by sylwek on 27.06.15.
  */
 public class DevicesListAdapter extends BaseAdapter {
+    private Context context;
 
-    private int count = 40; /* starting amount */
-    private Context devicesList;
-
-    public DevicesListAdapter(Context devicesList) {
+    public DevicesListAdapter(Context context) {
         super();
-        this.devicesList = devicesList;
+        this.context = context;
     }
 
     @Override
     public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
+        return Device.deviceList.size();
     }
 
     @Override
@@ -42,11 +37,17 @@ public class DevicesListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        //Device device = Device.deviceList.get(position);
-        //if(device != null) {
-            TextView view = new TextView(devicesList);
-            //view.setText("Device " + device.getName());
-        //}
+        TextView view = new TextView(context);
+        view.setHeight(70);
+        view.setPadding(10, 20, 0, 0);
+        Device currentDevice = Device.deviceList.get(position);
+        view.setText(currentDevice.getName() + " " + currentDevice.getState());
+
+        if (currentDevice.getColor().equals(Device.GREEN)) {
+            view.setTextColor(Color.GREEN);
+        } else if (currentDevice.getColor().equals(Device.RED)) {
+            view.setTextColor(Color.RED);
+        }
 
         return view;
     }

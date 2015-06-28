@@ -1,14 +1,10 @@
 package com.example.bartek.flowers;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.RemoteException;
-import android.widget.Toast;
 
 import com.example.bartek.flowers.DevicesList.DevicesInfiniteList;
-import com.example.bartek.flowers.R;
 import com.example.bartek.flowers.utils.Device;
 import com.kontakt.sdk.android.configuration.ForceScanConfiguration;
 import com.kontakt.sdk.android.configuration.MonitorPeriod;
@@ -53,6 +49,7 @@ public class BeaconMonitor implements  Runnable {
                 System.out.println("ADDED NEW Beacon id: " + beaconDevice.getUniqueId() + " major: " + beaconDevice.getMajor() + " minor: " + beaconDevice.getMinor());
 
                 Device.deviceList.add(new Device(beaconDevice.getUniqueId(), ((beaconDevice.getMinor() & 128) == 0) ? 0 : 1));
+                devicesInfiniteList.notifyDevicesListAdapter();
             }
 
             @Override
