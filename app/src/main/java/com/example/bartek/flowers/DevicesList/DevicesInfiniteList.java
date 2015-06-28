@@ -20,6 +20,7 @@ public class DevicesInfiniteList extends ListActivity {
     }
 
     public void notifyDevicesListAdapter() {
+        System.out.println("what");
         adapter.notifyDataSetChanged();
     }
 }

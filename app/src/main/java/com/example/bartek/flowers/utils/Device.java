@@ -1,8 +1,6 @@
 package com.example.bartek.flowers.utils;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 
@@ -15,7 +13,7 @@ public class Device extends Observable {
 
     public static final String RED = "red";
     public static final String GREEN = "green";
-    public static final String GREY = "grey";
+    public static final String GRAY = "gray";
 
     String color;
     String id;
@@ -37,7 +35,7 @@ public class Device extends Observable {
 
     public void setState(Integer state) {
         this.state = state;
-        this.color=GREY;
+        this.color = GRAY;
         this.lastUpdate=System.currentTimeMillis()/1000;
         if (this.state.equals(1)) this.color = GREEN;
         if (this.state.equals(0)) this.color = RED;

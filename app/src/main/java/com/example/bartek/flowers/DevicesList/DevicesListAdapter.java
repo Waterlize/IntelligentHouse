@@ -47,6 +47,8 @@ public class DevicesListAdapter extends BaseAdapter {
             view.setTextColor(Color.GREEN);
         } else if (currentDevice.getColor().equals(Device.RED)) {
             view.setTextColor(Color.RED);
+        } else if (currentDevice.getColor().equals(Device.GRAY)) {
+            view.setTextColor(Color.GRAY);
         }
 
         return view;
